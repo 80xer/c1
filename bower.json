@@ -17,7 +17,5 @@
     "test",
     "tests"
   ],
-  "dependencies": {
-    "js-xlsx": "~0.8.0"
-  }
+  "dependencies": {}
 }
