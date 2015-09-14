@@ -1,0 +1,23 @@
+{
+  "name": "c1",
+  "version": "0.1.0",
+  "homepage": "https://github.com/80xer/c1",
+  "authors": [
+    "80xer <80xer.s@gmail.com>"
+  ],
+  "main": "index.html",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "js-xlsx": "~0.8.0"
+  }
+}

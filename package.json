@@ -1,0 +1,18 @@
+{
+  "name": "C1",
+  "main": "index.html",
+  "description": "할인후출재보험료/재보험금 계산기",
+  "version": "0.1.0",
+  "window": {
+    "title": "할인후출재보험료/재보험금 계산기",
+    "toolbar": false,
+    "frame": false,
+    "width": 800,
+    "height": 500,
+    "position": "mouse",
+    "min_width": 400,
+    "min_height": 200,
+    "max_width": 800,
+    "max_height": 600
+  }
+}
