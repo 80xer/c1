@@ -6,7 +6,7 @@
   "window": {
     "title": "할인후출재보험료/재보험금 계산기",
     "toolbar": false,
-    "frame": false,
+    "frame": true,
     "width": 800,
     "height": 500,
     "position": "mouse",

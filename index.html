@@ -5,8 +5,6 @@
   <link rel="stylesheet" href="./bootstrap.min.css">
   <style>
     html {
-      background-color:  #424242;
-      color: #F6F7EE;
       padding: 0;
       margin: 0;
     }
@@ -15,9 +13,6 @@
       box-sizing: border-box;
       padding: 20px;
       margin: 0;
-      position: absolute;
-      width: 100%;
-      height: 100%;
     }
 
     .fileUpload {
@@ -41,9 +36,9 @@
       min-width: 200px;
     }
   </style>
-  <title>Document</title>
+  <title>할인후출재보험료/재보험금 계산기</title>
 </head>
-<body  style="-webkit-app-region: drag">
+<body>
   <div class="selectWrap">
     <input id="selectFile" placeholder="엑셀 파일을 선택하세요." disabled="disabled" />
     <div class="fileUpload btn btn-info">
@@ -55,27 +50,6 @@
     document.getElementById("selectBtn").onchange = function () {
         document.getElementById("selectFile").value = this.value;
     };
-
-    function handleDrop(e) {
-      e.stopPropagation();
-      e.preventDefault();
-      var files = e.dataTransfer.files;
-      var i,f;
-      for (i = 0, f = files[i]; i != files.length; ++i) {
-        var reader = new FileReader();
-        var name = f.name;
-        reader.onload = function(e) {
-          var data = e.target.result;
-
-          /* if binary string, read with type 'binary' */
-          var workbook = XLSX.read(data, {type: 'binary'});
-
-          /* DO SOMETHING WITH workbook HERE */
-        };
-        reader.readAsBinaryString(f);
-      }
-    }
-    drop_dom_element.addEventListener('drop', handleDrop, false);
   </script>
 </body>
 </html>
