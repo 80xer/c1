@@ -32,8 +32,16 @@
         filter: alpha(opacity=0);
     }
     #selectFile {
-      width: calc(100% - 100px);
+      width: calc(100% - 89px);
       min-width: 200px;
+    }
+    .alertLoadingWrap {
+      transition: max-height .25s linear;
+      max-height: 72px;
+      overflow: hidden;
+    }
+    .alertLoadingWrap.mh0 {
+      max-height: 0px;
     }
   </style>
   <title>할인후출재보험료/재보험금 계산기</title>
@@ -41,15 +49,55 @@
 <body>
   <div class="selectWrap">
     <input id="selectFile" placeholder="엑셀 파일을 선택하세요." disabled="disabled" />
-    <div class="fileUpload btn btn-info">
+    <div class="fileUpload btn btn-info" style="margin-right:0px;">
         <span>파일선택</span>
         <input id="selectBtn" type="file" class="upload" />
     </div>
   </div>
+  <div id="loadingWrap" class="alertLoadingWrap mh0">
+    <div class="alert alert-info" role="alert">엑셀 파일 읽는중, 잠시만 기다리세요...</div>
+  </div>
+  <script src="./bower_components/js-xlsx/dist/xlsx.full.min.js"></script>
+  <script src="./bower_components/jquery/dist/jquery.min.js"></script>
   <script>
-    document.getElementById("selectBtn").onchange = function () {
-        document.getElementById("selectFile").value = this.value;
-    };
+    $(function() {
+
+      $("#selectBtn").change(function (e) {
+        $("#selectFile").val($(this).val());
+        $('#loadingWrap').removeClass('mh0');
+        setTimeout(function(){
+          handleFile(e);
+        }, 250);
+      });
+
+      function handleFile(e) {
+        console.log('selected file');
+        $('#loadingWrap').removeClass('mh0');
+        var files = e.target.files;
+        var i,f;
+        for (i = 0, f = files[i]; i != files.length; ++i) {
+          var reader = new FileReader();
+          var name = f.name;
+          reader.onload = function(e) {
+            var data = e.target.result;
+
+            var workbook = XLSX.read(data, {type: 'binary'});
+            console.log('loaded file');
+        $('#loadingWrap').addClass('mh0');
+
+            /* Get worksheet */
+            var wsInput = workbook.Sheets['Input_보유'];
+
+            /* Find desired cell */
+            var wsInputA1 = wsInput['A1'];
+
+            /* Get the value */
+            console.log(wsInputA1.v);
+          };
+          reader.readAsBinaryString(f);
+        }
+      }
+    });
   </script>
 </body>
 </html>

@@ -18,6 +18,7 @@
     "tests"
   ],
   "dependencies": {
+    "jquery": "~2.1.4",
     "js-xlsx": "~0.8.0"
   }
 }
