@@ -154,7 +154,7 @@ $(function() {
   }
 
   function updateProgress(line) {
-    var percentLoaded = Math.round((line / 1000) * 100);
+    var percentLoaded = Math.round((line / totalLines) * 100);
     if (percentLoaded < 100) {
       $progress.css('width', percentLoaded + '%');
       $progress.text(percentLoaded + '%');

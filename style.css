@@ -11,6 +11,7 @@ body {
   box-sizing: border-box;
   padding: 20px;
   margin: 0;
+  overflow: hidden;
 }
 
 .fileUpload {
@@ -30,7 +31,7 @@ body {
     filter: alpha(opacity=0);
 }
 #selectFile {
-  width: calc(100% - 96px);
+  width: calc(100% - 104px);
   min-width: 200px;
 }
 #progress_bar {
