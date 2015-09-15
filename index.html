@@ -17,31 +17,33 @@
   <div id="loadingWrap" class="alertLoadingWrap mh0">
     <div class="alert alert-info" role="alert">엑셀 파일 읽는중, 잠시만 기다리세요...</div>
   </div>
-  
-  <div id="progress_bar"><div class="percent">0%</div></div>
   <div id="inputWrap" class="inputWrap row mh0">
     <div class="col-sm-3 col-xs-3">
       <div class="input-group input-group-sm">
         <span class="input-group-addon">시뮬레이션 년도</span>
-        <input id="sYear" type="text" class="form-control" aria-label="...">
+        <input id="sYear" type="text" value="2014" class="form-control" aria-label="...">
       </div><!-- /input-group -->
     </div><!-- /.col-lg-6 -->
     <div class="col-sm-3 col-xs-3">
       <div class="input-group input-group-sm">
         <span class="input-group-addon">시뮬레이션 기간</span>
-        <input id="sTerm" type="text" class="form-control" aria-label="...">
+        <input id="sTerm" type="text" value="10" class="form-control" aria-label="...">
       </div><!-- /input-group -->
     </div><!-- /.col-lg-6 -->
     <div class="col-sm-2 col-xs-2 col-md-offset-4 col-xs-offset-4">
       <button id="calcBtn" type="button" class="btn btn-primary">계산하기</button>
     </div>
   </div>
+  <div><button id="exportXl" type="button" class="btn btn-warning">결과 엑셀로 저장</button></div>
   <div id="calcAlertWrap" class="alertCalcWrap mh0">
     <div class="alert alert-danger" role="alert">모든 값을 입력하세요.</div>
   </div>
+  <div id="progress_bar"><div class="percent">0%</div></div>
   <div id="time"></div>
   <script src="xlsx.full.min.js"></script>
   <script src="jquery.min.js"></script>
+  <script src="blob.js"></script>
+  <script src="FileSaver.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
