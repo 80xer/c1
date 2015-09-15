@@ -21,7 +21,7 @@ $(function() {
   initMenu();
 
   var reader;
-  var progress = document.querySelector('.percent');
+  var $progress = $('.percent');
 
   var workbook;
   var totalLines;
@@ -52,12 +52,22 @@ $(function() {
       return;
     }
 
-    calc();
+
+    $('#exportWrap').hide();
+
+    $progress.css('width', '0%');
+    $progress.text('0%');
+    document.getElementById('progress_bar').className = 'loading';
+
+    setTimeout(function() {
+      calc();
+    }, 700);
   });
 
   $("#selectBtn").change(function (e) {
     $("#selectFile").val($(this).val());
     if ($(this).val()) {
+      $('#exportWrap').hide();
       $('#loadingWrap').removeClass('mh0');
       setTimeout(function(){
         handleFileSelect(e);
@@ -111,8 +121,6 @@ $(function() {
     }
      
     var wb = new Workbook(), ws = sheet_from_array_of_arrays(resultM);
-     
-    /* add worksheet to workbook */
     wb.SheetNames.push(ws_name);
     wb.Sheets[ws_name] = ws;
     var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
@@ -146,12 +154,10 @@ $(function() {
   }
 
   function updateProgress(line) {
-    // evt is an ProgressEvent.
-    var percentLoaded = Math.round((line / totalLines) * 100);
-    // Increase the progress bar length.
+    var percentLoaded = Math.round((line / 1000) * 100);
     if (percentLoaded < 100) {
-      progress.style.width = percentLoaded + '%';
-      progress.textContent = percentLoaded + '%';
+      $progress.css('width', percentLoaded + '%');
+      $progress.text(percentLoaded + '%');
     }
   }
 
@@ -173,9 +179,6 @@ $(function() {
   function calc(data) {
     var sc = new Date();
     var $time = $('#time');
-    progress.style.width = '0%';
-    progress.textContent = '0%';
-    document.getElementById('progress_bar').className = 'loading';
 
     var 
       wsSp1 = workbook.Sheets['가정1_Lapse']
@@ -221,161 +224,173 @@ $(function() {
 
     totalLines = wsJson.length - 1;
 
-    while((wsInput['K' + line]) && (cell = wsInput['K' + line]) && cell.v && loop) {
-      updateProgress(line);
-
-      tYm = cell.v;
-      tY = parseInt((tYm+'').substr(0,4), 10);
-      sex = wsInput['Q' + line].v;
-      age = wsInput['R' + line].v;
-      rrCode = wsInput['S' + line].v;
-      rgCode = wsInput['A' + line].v;
-      ggYear = wsInput['L' + line].v;
-      niGigan = wsInput['H' + line].v;
-
-      for(i = 0; i <= sTerm; i++) {
-        sYearI = sYear + i;
-        ggYearI = ggYear + i;
-        tM = tY % 10;
-        sM = sYearI % 10;
-
-        if ( tY < sYearI && tM === sM ) {
-          bHr = true;
-        }
-
-        if (bHr === true) {
-          hr = 'R';
-        } else {
-          hr = 'H';
-        }
-
-        //TSN
-        ii = 2;
-        while(wsSp5['A' + ii]) {
-          if (wsSp5['A' + ii].v === ggYearI) {
-            if (wsSp5['B' + ii].v === niGigan) {
-              tsn = wsSp5['C' + ii].v;
-              break;
-            }
-          }
-          ii++;
-        }
-
-        //보유한도금액
-        ii = 2;
-        while(wsSp2['A' + ii]) {
-          if (wsSp2['A' + ii].v <= tYm) {
-            if (wsSp2['B' + ii].v >= tYm) {
-              if (wsSp2['C' + ii].v <= ggYearI) {
-                if (wsSp2['D' + ii].v >= ggYearI) {
-                  boyu = wsSp2['E' + ii].v;
-                  break;
-                }
-              }
-            }
-          }
-          ii++;
-        }
-
-        //위험률
-        ii = 2;
-        while(wsSp3['A' + ii]) {
-          rr = 0;
-          if (wsSp3['A' + ii].v === rrCode) {
-            if (wsSp3['B' + ii].v === sex) {
-              if (wsSp3['C' + ii].v === (age + i)) {
-                rr = wsSp3['D' + ii].v
-                break;
-              }
-            }
-          }
-          ii++;
-        }
-
-        //할인율
-        ii = 2;
-        while(wsSp4['A' + ii]) {
-          if (wsSp4['A' + ii].v === rgCode) {
-            if (wsSp4['B' + ii].v === tY) {
-              if (wsSp4['C' + ii].v <= ggYearI) {
-                if (wsSp4['D' + ii].v >= ggYearI) {
-                  rs = wsSp4['E' + ii].v;
-                  break;
-                }
-              }
-            } 
-          }
-          ii++;
-        }
-
-        //Lapse
-        if (wsInput['J' + line].v > i) {
-          lpsYear = 99;
-        } else if (ggYearI > 10) {
-          lpsYear = 10;
-        } else {
-          lpsYear = ggYearI;
-        }
-
-        ii = 2;
-        while(wsSp1['A' + ii]) {
-          if (wsSp1['A' + ii].v === lpsYear) {
-            lps = wsSp1['B' + ii].v
-            break;
-          }
-          ii++;
-        }
-
-        //할인후출재보험료
-        //준비금
-        rVal = wsInput['T' + line].v;
-
-        if (rVal !== 0) {
-          hVal = wsInput['M' + line].v - rVal;
-        } else {
-          hVal = wsInput['M' + line].v *
-            (wsInput['O' + line].v + wsInput['P' + line].v * tsn) /
-            (wsInput['O' + line].v + wsInput['P' + line].v);
-        }
-
-        hVal *= Math.max((wsInput['N' + line].v - boyu) / wsInput['N' + line].v, 0) *
-          rr / 60000 * ( 1 - rs ) * wsInput['C' + line].v * ( 1 - lps ) *
-          (wsInput['I' + line].v > i?1:0)
-
-        //재보험금
-        ii = 2;
-        while(wsSp6['A' + ii]) {
-          if (wsSp6['A' + ii].v === sex) {
-            if (wsSp6['B' + ii].v <= ggYearI) {
-              if (wsSp6['C' + ii].v >= ggYearI) {
-                jVal = wsSp6['D' + ii].v * hVal;
-                break;
-              }
-            }
-          }
-          ii++;
-        }
-
-        if (line <= 100) {
-          if (i === 0) {
-            resultM.push([tY, tYm, ggYear, wsInput['B'+line].v, niGigan, line, hr, i, sYearI, tsn, boyu, rr, rs, lps, hVal, jVal]);
-          } else {
-            resultM.push([null, null, null, null, null, null, hr, i, sYearI, tsn, boyu, rr, rs, lps, hVal, jVal]);
-          }
-        }
-        
-      }
-
-      bHr = false;
-      hr = '';
-
-      if (i > 1000) loop = false;
-      line++;
+    if ((wsInput['K' + line]) && (cell = wsInput['K' + line]) && cell.v && loop) {
+      setTimeout(doLoop, 0);
     }
 
-    progress.style.width = '100%';
-    progress.textContent = '100% (' + ((new Date()) - sc)/1000 + '초)';
-    setTimeout("document.getElementById('progress_bar').className='';", 2000);
+    function doLoop() {
+      updateProgress(line);
+
+      // function run() {
+        tYm = cell.v;
+        tY = parseInt((tYm+'').substr(0,4), 10);
+        sex = wsInput['Q' + line].v;
+        age = wsInput['R' + line].v;
+        rrCode = wsInput['S' + line].v;
+        rgCode = wsInput['A' + line].v;
+        ggYear = wsInput['L' + line].v;
+        niGigan = wsInput['H' + line].v;
+
+        for(i = 0; i <= sTerm; i++) {
+          sYearI = sYear + i;
+          ggYearI = ggYear + i;
+          tM = tY % 10;
+          sM = sYearI % 10;
+
+          if ( tY < sYearI && tM === sM ) {
+            bHr = true;
+          }
+
+          if (bHr === true) {
+            hr = 'R';
+          } else {
+            hr = 'H';
+          }
+
+          //TSN
+          ii = 2;
+          while(wsSp5['A' + ii]) {
+            if (wsSp5['A' + ii].v === ggYearI) {
+              if (wsSp5['B' + ii].v === niGigan) {
+                tsn = wsSp5['C' + ii].v;
+                break;
+              }
+            }
+            ii++;
+          }
+
+          //보유한도금액
+          ii = 2;
+          while(wsSp2['A' + ii]) {
+            if (wsSp2['A' + ii].v <= tYm) {
+              if (wsSp2['B' + ii].v >= tYm) {
+                if (wsSp2['C' + ii].v <= ggYearI) {
+                  if (wsSp2['D' + ii].v >= ggYearI) {
+                    boyu = wsSp2['E' + ii].v;
+                    break;
+                  }
+                }
+              }
+            }
+            ii++;
+          }
+
+          //위험률
+          ii = 2;
+          while(wsSp3['A' + ii]) {
+            rr = 0;
+            if (wsSp3['A' + ii].v === rrCode) {
+              if (wsSp3['B' + ii].v === sex) {
+                if (wsSp3['C' + ii].v === (age + i)) {
+                  rr = wsSp3['D' + ii].v
+                  break;
+                }
+              }
+            }
+            ii++;
+          }
+
+          //할인율
+          ii = 2;
+          while(wsSp4['A' + ii]) {
+            if (wsSp4['A' + ii].v === rgCode) {
+              if (wsSp4['B' + ii].v === tY) {
+                if (wsSp4['C' + ii].v <= ggYearI) {
+                  if (wsSp4['D' + ii].v >= ggYearI) {
+                    rs = wsSp4['E' + ii].v;
+                    break;
+                  }
+                }
+              } 
+            }
+            ii++;
+          }
+
+          //Lapse
+          if (wsInput['J' + line].v > i) {
+            lpsYear = 99;
+          } else if (ggYearI > 10) {
+            lpsYear = 10;
+          } else {
+            lpsYear = ggYearI;
+          }
+
+          ii = 2;
+          while(wsSp1['A' + ii]) {
+            if (wsSp1['A' + ii].v === lpsYear) {
+              lps = wsSp1['B' + ii].v
+              break;
+            }
+            ii++;
+          }
+
+          //할인후출재보험료
+          //준비금
+          rVal = wsInput['T' + line].v;
+
+          if (rVal !== 0) {
+            hVal = wsInput['M' + line].v - rVal;
+          } else {
+            hVal = wsInput['M' + line].v *
+              (wsInput['O' + line].v + wsInput['P' + line].v * tsn) /
+              (wsInput['O' + line].v + wsInput['P' + line].v);
+          }
+
+          hVal *= Math.max((wsInput['N' + line].v - boyu) / wsInput['N' + line].v, 0) *
+            rr / 60000 * ( 1 - rs ) * wsInput['C' + line].v * ( 1 - lps ) *
+            (wsInput['I' + line].v > i?1:0)
+
+          //재보험금
+          ii = 2;
+          while(wsSp6['A' + ii]) {
+            if (wsSp6['A' + ii].v === sex) {
+              if (wsSp6['B' + ii].v <= ggYearI) {
+                if (wsSp6['C' + ii].v >= ggYearI) {
+                  jVal = wsSp6['D' + ii].v * hVal;
+                  break;
+                }
+              }
+            }
+            ii++;
+          }
+
+          if (line <= 101) {
+            if (i === 0) {
+              resultM.push([tY, tYm, ggYear, wsInput['B'+line].v, niGigan, line, hr, i, sYearI, tsn, boyu, rr, rs, lps, hVal, jVal]);
+            } else {
+              resultM.push([null, null, null, null, null, null, hr, i, sYearI, tsn, boyu, rr, rs, lps, hVal, jVal]);
+            }
+          }
+          
+        }
+
+        bHr = false;
+        hr = '';
+
+        if (i > 1000) loop = false;
+        line++;
+        if ((wsInput['K' + line]) && (cell = wsInput['K' + line]) && cell.v && loop) {
+          setTimeout(doLoop,0)
+        } else {
+          $progress.css('width','100%');
+          $progress.text('100% (' + ((new Date()) - sc)/1000 + '초)');
+          setTimeout("document.getElementById('progress_bar').className='';", 2000);
+          setTimeout(function(){
+            $('#exportWrap').show();
+          }, 3500);
+        }
+      // }
+    }
   }
 
   function parseFileAsync(mixed, options, callback) {

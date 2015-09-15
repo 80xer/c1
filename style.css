@@ -40,9 +40,9 @@ body {
   font-size: 14px;
   clear: both;
   opacity: 0;
-  -moz-transition: opacity 1s linear;
-  -o-transition: opacity 1s linear;
-  -webkit-transition: opacity 1s linear;
+  -moz-transition: opacity .5s linear;
+  -o-transition: opacity .5s linear;
+  -webkit-transition: opacity .5s linear;
 }
 #progress_bar.loading {
   opacity: 1.0;
@@ -96,4 +96,10 @@ body {
   position: relative;
   padding-right: 15px;
   padding-left: 15px;
+}
+
+#exportWrap {
+  text-align: right;
+  padding: 7px;
+  display: none;
 }
