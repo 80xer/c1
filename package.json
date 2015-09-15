@@ -8,11 +8,9 @@
     "toolbar": false,
     "frame": true,
     "width": 800,
-    "height": 500,
+    "height": 200,
     "position": "mouse",
-    "min_width": 400,
-    "min_height": 200,
-    "max_width": 800,
-    "max_height": 600
+    "min_width": 800,
+    "min_height": 200
   }
 }

@@ -2,48 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="./bootstrap.min.css">
-  <style>
-    html {
-      padding: 0;
-      margin: 0;
-    }
-
-    body {
-      box-sizing: border-box;
-      padding: 20px;
-      margin: 0;
-    }
-
-    .fileUpload {
-        position: relative;
-        overflow: hidden;
-        margin: 10px;
-    }
-    .fileUpload input.upload {
-        position: absolute;
-        top: 0;
-        right: 0;
-        margin: 0;
-        padding: 0;
-        font-size: 20px;
-        cursor: pointer;
-        opacity: 0;
-        filter: alpha(opacity=0);
-    }
-    #selectFile {
-      width: calc(100% - 96px);
-      min-width: 200px;
-    }
-    .alertLoadingWrap {
-      transition: max-height .25s linear;
-      max-height: 72px;
-      overflow: hidden;
-    }
-    .alertLoadingWrap.mh0 {
-      max-height: 0px;
-    }
-  </style>
+  <link rel="stylesheet" href="bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
   <title>할인후출재보험료/재보험금 계산기</title>
 </head>
 <body>
@@ -57,47 +17,28 @@
   <div id="loadingWrap" class="alertLoadingWrap mh0">
     <div class="alert alert-info" role="alert">엑셀 파일 읽는중, 잠시만 기다리세요...</div>
   </div>
-  <script src="./bower_components/js-xlsx/dist/xlsx.full.min.js"></script>
-  <script src="./bower_components/jquery/dist/jquery.min.js"></script>
-  <script>
-    $(function() {
-
-      $("#selectBtn").change(function (e) {
-        $("#selectFile").val($(this).val());
-        $('#loadingWrap').removeClass('mh0');
-        setTimeout(function(){
-          handleFile(e);
-        }, 250);
-      });
-
-      function handleFile(e) {
-        console.log('selected file');
-        $('#loadingWrap').removeClass('mh0');
-        var files = e.target.files;
-        var i,f;
-        for (i = 0, f = files[i]; i != files.length; ++i) {
-          var reader = new FileReader();
-          var name = f.name;
-          reader.onload = function(e) {
-            var data = e.target.result;
-
-            var workbook = XLSX.read(data, {type: 'binary'});
-            console.log('loaded file');
-        $('#loadingWrap').addClass('mh0');
-
-            /* Get worksheet */
-            var wsInput = workbook.Sheets['Input_보유'];
-
-            /* Find desired cell */
-            var wsInputA1 = wsInput['A1'];
-
-            /* Get the value */
-            console.log(wsInputA1.v);
-          };
-          reader.readAsBinaryString(f);
-        }
-      }
-    });
-  </script>
+  <div id="inputWrap" class="inputWrap row mh0">
+    <div class="col-sm-3 col-xs-3">
+      <div class="input-group input-group-sm">
+        <span class="input-group-addon">시뮬레이션 년도</span>
+        <input id="sYear" type="text" class="form-control" aria-label="...">
+      </div><!-- /input-group -->
+    </div><!-- /.col-lg-6 -->
+    <div class="col-sm-3 col-xs-3">
+      <div class="input-group input-group-sm">
+        <span class="input-group-addon">시뮬레이션 기간</span>
+        <input id="sTerm" type="text" class="form-control" aria-label="...">
+      </div><!-- /input-group -->
+    </div><!-- /.col-lg-6 -->
+    <div class="col-sm-2 col-xs-2 col-md-offset-4 col-xs-offset-4">
+      <button id="calcBtn" type="button" class="btn btn-primary">계산하기</button>
+    </div>
+  </div>
+  <div id="calcAlertWrap" class="alertCalcWrap mh0">
+    <div class="alert alert-danger" role="alert">모든 값을 입력하세요.</div>
+  </div>
+  <script src="xlsx.full.min.js"></script>
+  <script src="jquery.min.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>

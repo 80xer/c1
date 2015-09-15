@@ -1,0 +1,80 @@
+* {
+  -webkit-user-select: none;
+}
+
+html {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  box-sizing: border-box;
+  padding: 20px;
+  margin: 0;
+}
+
+.fileUpload {
+    position: relative;
+    overflow: hidden;
+    margin: 10px;
+}
+.fileUpload input.upload {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+#selectFile {
+  width: calc(100% - 96px);
+  min-width: 200px;
+}
+.alertLoadingWrap {
+  transition: max-height .25s linear;
+  max-height: 72px;
+  overflow: hidden;
+}
+.alertLoadingWrap.mh0 {
+  max-height: 0px;
+}
+
+.alertCalcWrap {
+  transition: max-height .25s linear;
+  max-height: 72px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.alertCalcWrap.mh0 {
+  max-height: 0px;  
+}
+
+.input-group {
+  margin-bottom: 10px;
+}
+
+.inputWrap {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.inputWrap div:first-child {
+  padding-left: 0px;
+}
+
+.inputWrap div:last-child {
+  text-align: right;
+  padding-right: 7px;
+}
+
+.w60 {
+  float: left;
+  width: 200px;
+  position: relative;
+  padding-right: 15px;
+  padding-left: 15px;
+}
